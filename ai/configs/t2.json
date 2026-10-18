@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "task": "T2",
+  "boards": [
+    "T2:embryo:val_interp",
+    "T2:heart:val_interp",
+    "T2:heart:val_extrap"
+  ],
+  "targets": {
+    "T2:embryo:val_interp": "Whole-embryo expression and 3D coordinates at E7.5",
+    "T2:heart:val_interp": "Heart expression and 3D coordinates at E8.5",
+    "T2:heart:val_extrap": "Heart expression and 3D coordinates at E10.5"
+  },
+  "inputs": [
+    "datasets/E6.75.h5ad",
+    "datasets/E7.25.h5ad",
+    "datasets/E8.0.h5ad",
+    "datasets/E8.25_late.h5ad",
+    "datasets/E8.75.h5ad",
+    "datasets/E9.5.h5ad"
+  ],
+  "prompt_files": [
+    "ai/prompts/competition.md",
+    "ai/prompts/common.md",
+    "ai/prompts/t2.md"
+  ],
+  "model": "gpt-6-astra",
+  "reasoning_effort": "high",
+  "sandbox": "workspace-write",
+  "network_access": false,
+  "wall_time_seconds": 7200,
+  "seed": 42,
+  "codex_executable": "codex"
+}

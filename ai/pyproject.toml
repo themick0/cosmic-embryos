@@ -1,0 +1,14 @@
+[project]
+name = "cosmic-embryos-harness"
+version = "0.1.0"
+description = "Recorded autonomous Codex runs for the Virtual Embryo Challenge"
+requires-python = ">=3.11"
+dependencies = [
+    "anndata>=0.12,<0.14",
+    "h5py>=3.12,<4",
+    "httpx>=0.28,<1",
+    "numpy>=2.1,<3",
+]
+
+[tool.uv]
+package = false

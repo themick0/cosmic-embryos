@@ -1,0 +1,12 @@
+/runs/
+/exports/
+/submissions/
+/checks/
+/.env.local
+/.venv/
+__pycache__/
+*.pyc
+*.local.json
+*.local.toml
+*.local.md
+.pytest_cache/

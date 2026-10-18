@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "task": "T1",
+  "boards": [
+    "T1:val"
+  ],
+  "targets": {
+    "T1:val": "RNA distribution at E10.5"
+  },
+  "inputs": [
+    "datasets/E8.5_RNA.h5ad",
+    "datasets/E9.5_RNA.h5ad"
+  ],
+  "prompt_files": [
+    "ai/prompts/competition.md",
+    "ai/prompts/common.md",
+    "ai/prompts/t1.md"
+  ],
+  "model": "gpt-6-astra",
+  "reasoning_effort": "high",
+  "sandbox": "workspace-write",
+  "network_access": false,
+  "wall_time_seconds": 3600,
+  "seed": 42,
+  "codex_executable": "codex"
+}

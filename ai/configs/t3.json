@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "task": "T3",
+  "boards": [
+    "T3:gata4"
+  ],
+  "targets": {
+    "T3:gata4": "Gata4 KO at E8.75 (Mesp1-Cre; Gata4 F/F; Gata6 F/+)"
+  },
+  "inputs": [
+    "datasets/E8.75.h5ad",
+    "datasets/E9.5.h5ad",
+    "datasets/E9.5_mab21l2_ko.h5ad"
+  ],
+  "prompt_files": [
+    "ai/prompts/competition.md",
+    "ai/prompts/common.md",
+    "ai/prompts/t3.md"
+  ],
+  "model": "gpt-6-astra",
+  "reasoning_effort": "high",
+  "sandbox": "workspace-write",
+  "network_access": false,
+  "wall_time_seconds": 3600,
+  "seed": 42,
+  "codex_executable": "codex"
+}
