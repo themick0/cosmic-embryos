@@ -20,6 +20,13 @@ class ValidationRegressions(unittest.TestCase):
         self.fixture.setUp()
         self.addCleanup(self.fixture.doCleanups)
 
+    def test_locked_run_disables_repository_codegraph(self):
+        from embryo_harness.files import read_json
+        run = self.fixture.prepare()
+        command = read_json(run / 'frozen/command.json')
+        overrides = [command[i + 1] for i, value in enumerate(command[:-1]) if value == '-c']
+        self.assertIn('mcp_servers.codegraph.enabled=false', overrides)
+
     def test_root_encoding_version_is_checked_before_anndata(self):
         with h5py.File(self.fixture.data, 'r+') as f:
             f.attrs['encoding-version'] = '99.0.0'

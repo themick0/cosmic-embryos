@@ -63,3 +63,15 @@ configuration must include `ai/prompts/competition.md`, then
 `ai/prompts/common.md`, then its task prompt in `prompt_files`. Keep these
 instructions aligned when changing the workflow. Never rewrite existing frozen
 snapshots to introduce new rules; prepare a new run.
+
+## Repository code navigation
+
+CodeGraph MCP is available for repository maintenance. Read
+[its setup and scope](ai/mcp/codegraph/README.md). Use `codegraph_explore` when a
+symbol or call-path query helps; its default project is `ai/`, and result paths
+are relative to that directory. Confirm relevant source before editing.
+If MCP has not loaded, use `bash ai/mcp/codegraph/run.sh explore "symbol names"`
+from the repository root; run `sync` first when freshness matters.
+Locked research runs must not query this shared repository index. Their Codex
+command explicitly disables this MCP server; enabling a run-scoped index is a
+pre-run configuration change that requires matching frozen evidence.

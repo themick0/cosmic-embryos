@@ -39,6 +39,7 @@ def command(run: Path, config: dict, runtime: dict) -> list[str]:
             "-c", f'model_reasoning_effort="{config["reasoning_effort"]}"',
             "-c", "project_doc_max_bytes=0", "-c", 'web_search="disabled"',
             "-c", "features.multi_agent=false",
+            "-c", "mcp_servers.codegraph.enabled=false",
             "-c", "sandbox_workspace_write.network_access=" + str(config["network_access"]).lower(),
             "-c", "sandbox_workspace_write.exclude_tmpdir_env_var=true",
             "-c", "sandbox_workspace_write.exclude_slash_tmp=true",

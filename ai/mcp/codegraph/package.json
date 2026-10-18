@@ -1,0 +1,8 @@
+{
+  "name": "cosmic-embryos-codegraph",
+  "private": true,
+  "description": "Pinned local CodeGraph MCP for repository maintenance",
+  "dependencies": {
+    "@colbymchenry/codegraph": "1.6.2"
+  }
+}

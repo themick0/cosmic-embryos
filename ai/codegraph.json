@@ -1,0 +1,15 @@
+{
+  "exclude": [
+    ".env*",
+    "*.local.*",
+    ".venv/",
+    ".codegraph/",
+    "runs/",
+    "exports/",
+    "submissions/",
+    "checks/",
+    "mcp/codegraph/node_modules/",
+    "**/__pycache__/",
+    "**/*.h5ad"
+  ]
+}
