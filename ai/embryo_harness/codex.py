@@ -13,6 +13,23 @@ from .files import HarnessError, record, read_json, write_json, utc
 
 
 REQUIRED_FLAGS = ("--json", "--output-schema", "--ignore-user-config", "--ignore-rules")
+PROVIDERS = ("openai", "docker-sandbox-oauth")
+# Public proxy sentinels from Docker's codex/spec.yaml; these are not credentials.
+# https://github.com/docker/sbx-kits-contrib/blob/main/codex/spec.yaml
+DOCKER_OAUTH_CONFIG = (
+    'forced_login_method="api"',
+    'model_provider="sandboxd"',
+    'model_providers.sandboxd.name="Sandbox Proxy"',
+    'model_providers.sandboxd.base_url="https://chatgpt.com/backend-api/codex"',
+    'model_providers.sandboxd.experimental_bearer_token="oai-oat01-proxy-managed"',
+    'model_providers.sandboxd.requires_openai_auth=false',
+)
+
+
+def validate_provider(provider: str) -> str:
+    if provider not in PROVIDERS:
+        raise HarnessError(f"Unsupported codex_provider; choose one of: {', '.join(PROVIDERS)}")
+    return provider
 
 
 def probe(executable: str) -> dict:
@@ -32,7 +49,8 @@ def probe(executable: str) -> dict:
 
 
 def command(run: Path, config: dict, runtime: dict) -> list[str]:
-    return [runtime["path"], "--no-daemon", "-a", "never", "exec",
+    provider = validate_provider(config.get("codex_provider", "openai"))
+    argv = [runtime["path"], "--no-daemon", "-a", "never", "exec",
             "--ignore-user-config", "--ignore-rules", "--ephemeral",
             "--skip-git-repo-check", "--json", "--color", "never",
             "--model", config["model"], "--sandbox", config["sandbox"],
@@ -46,6 +64,9 @@ def command(run: Path, config: dict, runtime: dict) -> list[str]:
             "--cd", str(run / "work"),
             "--output-schema", str(run / "frozen" / "final.schema.json"),
             "--output-last-message", str(run / "final.json"), "-"]
+    if provider == "docker-sandbox-oauth":
+        argv[-1:-1] = [arg for setting in DOCKER_OAUTH_CONFIG for arg in ("-c", setting)]
+    return argv
 
 
 def stop_group(process):
@@ -94,16 +115,17 @@ def execute(argv: list[str], prompt: Path, run: Path, seconds: int) -> tuple[int
         return process.returncode, False
 
 
-def smoke_check(root: Path, model: str, executable="codex") -> dict:
+def smoke_check(root: Path, model: str, executable="codex", provider="openai") -> dict:
     """Make one small real call and check shell execution with the run flags."""
     from .core import summarize_trace
 
+    provider = validate_provider(provider)
     runtime = probe(executable)
     run = root / "ai/checks" / ("codex-" + uuid.uuid4().hex[:12])
     (run / "work").mkdir(parents=True)
     (run / "frozen").mkdir()
     config = {"model": model, "reasoning_effort": "high", "sandbox": "workspace-write",
-              "network_access": False}
+              "network_access": False, "codex_provider": provider}
     write_json(run / "frozen/final.schema.json", {"type": "object", "additionalProperties": False,
                "properties": {"ok": {"type": "boolean"}}, "required": ["ok"]})
     prompt = run / "frozen/prompt.txt"
@@ -114,6 +136,7 @@ def smoke_check(root: Path, model: str, executable="codex") -> dict:
     argv = command(run, config, runtime)
     write_json(run / "frozen/command.json", argv)
     result = {"checked_at": utc(), "directory": str(run), "model": model, "runtime": runtime,
+              "codex_provider": provider,
               "ok": False}
     write_json(run / "result.json", result)
     rc, timeout = execute(argv, prompt, run, 120)

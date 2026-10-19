@@ -6,7 +6,7 @@ ai_root="$(CDPATH= cd -- "$tool_dir/../.." && pwd)"
 unset VE_CHALLENGE_API_KEY
 export CODEGRAPH_TELEMETRY=0
 export DO_NOT_TRACK=1
-export CODEGRAPH_NO_DAEMON=1
+# Use CodeGraph's shared daemon unless the caller explicitly opts out.
 export CODEGRAPH_DIR=.codegraph
 cd -- "$ai_root"
 if [[ ! -x "$tool_dir/node_modules/.bin/codegraph" ]]; then

@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "task": "T2",
+  "boards": [
+    "T2:embryo:val_interp"
+  ],
+  "targets": {
+    "T2:embryo:val_interp": "Whole-embryo expression and 3D coordinates at E7.5; bounded two-comparator calibration pilot"
+  },
+  "inputs": [
+    "datasets/E6.75.h5ad",
+    "datasets/E7.25.h5ad",
+    "datasets/E8.0.h5ad"
+  ],
+  "prompt_files": [
+    "ai/prompts/competition.md",
+    "ai/prompts/common.md",
+    "ai/prompts/t2_pilot.md"
+  ],
+  "model": "gpt-6-astra",
+  "codex_provider": "docker-sandbox-oauth",
+  "reasoning_effort": "high",
+  "sandbox": "workspace-write",
+  "network_access": false,
+  "wall_time_seconds": 1800,
+  "seed": 42,
+  "codex_executable": "codex"
+}

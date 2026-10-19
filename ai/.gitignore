@@ -2,6 +2,7 @@
 /exports/
 /submissions/
 /checks/
+/campaign/
 /.env.local
 /.venv/
 __pycache__/

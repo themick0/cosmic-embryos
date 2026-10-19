@@ -21,6 +21,7 @@ def parser():
     smoke = sub.add_parser("codex-check", help="Make a small real model call and test sandbox execution")
     smoke.add_argument("--model", required=True)
     smoke.add_argument("--codex", default="codex")
+    smoke.add_argument("--provider", choices=codex.PROVIDERS, default="openai")
     sub.add_parser("inventory", help="Read metadata from local datasets")
     sub.add_parser("sync-panels", help="Refresh official public gene panels before a new run")
     for name in ("prepare", "run"):
@@ -65,7 +66,7 @@ def main(argv=None):
             case "inventory":
                 result = [inspect(p) for p in sorted((ROOT / "datasets").glob("*.h5ad"))]
             case "codex-check":
-                result = codex.smoke_check(ROOT, args.model, args.codex)
+                result = codex.smoke_check(ROOT, args.model, args.codex, provider=args.provider)
             case "sync-panels":
                 result = panels.sync(ROOT / "ai")
             case "prepare" | "run":

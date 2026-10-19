@@ -36,9 +36,12 @@ The script preserves an existing independently managed project configuration.
   `datasets/` directory is outside the indexed project.
 - The wrapper disables telemetry and removes `VE_CHALLENGE_API_KEY` from the
   subprocess environment. It never reads `ai/.env.local`.
-- `CODEGRAPH_NO_DAEMON=1` keeps the server in the MCP process rather than starting
-  a detached shared daemon. Use `sync` when freshness matters; do not assume a
-  background watcher remains running after the MCP client exits.
+- MCP clients use CodeGraph's shared local daemon, so multiple Codex sessions
+  can share one index and watcher. The daemon may exit when idle; use `sync`
+  when freshness matters.
+- The wrapper preserves an explicit `CODEGRAPH_NO_DAEMON=1` override for
+  environments that cannot use the shared daemon. Direct mode permits only
+  one MCP writer per project; do not use it for concurrent sessions.
 
 Index exclusions are not a filesystem sandbox. Repository-maintenance agents
 already have access to the repository. Locked research runs explicitly disable
@@ -65,3 +68,11 @@ bash ai/mcp/codegraph/run.sh explore "submit read_prediction attach_evidence"
 
 To upgrade, deliberately update the pinned dependency and lockfile, reinstall,
 and rebuild the index. Do not use an unpinned `npx` command in MCP configuration.
+
+## Switching from direct mode
+
+Earlier versions of the wrapper forced `CODEGRAPH_NO_DAEMON=1`. Restart the
+CodeGraph MCP connections in existing Codex sessions after updating the wrapper
+so they use the shared daemon. A process already running in direct mode keeps
+its writer lock until it exits. Do not delete `ai/.codegraph/writer.pid` while
+its owner is alive. No reinstallation or index rebuild is required.

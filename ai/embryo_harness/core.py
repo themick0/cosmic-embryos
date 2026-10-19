@@ -33,6 +33,7 @@ SCHEMA = {
 CONFIG_KEYS = {"version", "task", "boards", "targets", "inputs", "prompt_files", "model",
                "reasoning_effort", "sandbox", "network_access", "wall_time_seconds", "seed",
                "codex_executable"}
+OPTIONAL_CONFIG_KEYS = {"codex_provider"}
 IGNORED = {"runs", "exports", ".venv", "__pycache__", ".pytest_cache", ".git"}
 SOURCE_DIRS = {"embryo_harness", "configs", "prompts", "resources", "tests"}
 SOURCE_ROOT_FILES = {"harness.py", "README.md", "pyproject.toml", "uv.lock", ".gitignore"}
@@ -61,8 +62,11 @@ def source_files(ai: Path):
 
 def load_config(path: Path, root: Path, model: str | None = None) -> dict:
     config = read_json(path)
-    if not isinstance(config, dict) or set(config) != CONFIG_KEYS:
-        raise HarnessError(f"Config requires exactly: {sorted(CONFIG_KEYS)}")
+    if (not isinstance(config, dict) or not CONFIG_KEYS <= set(config)
+            or not set(config) <= CONFIG_KEYS | OPTIONAL_CONFIG_KEYS):
+        raise HarnessError(f"Config requires: {sorted(CONFIG_KEYS)}; "
+                           f"optional: {sorted(OPTIONAL_CONFIG_KEYS)}")
+    config["codex_provider"] = codex.validate_provider(config.get("codex_provider", "openai"))
     if model is not None:
         config["model"] = model
     if config["version"] != 1 or config["task"] not in ("T1", "T2", "T3"):
